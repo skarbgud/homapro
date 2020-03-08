@@ -15,12 +15,12 @@
 	<br />   
 	<a href="/board/listSearch">글 목록 + 페이지 +목록</a>
 
-	<form role="form" method="post" autocomplete="off" action="/board/login">
+	<form role="form" method="post" autocomplete="off" action="/member/login">
 		<p>
 			<label for="userId">아이디</label> 
 			<input type="text" id="userId" name="userId" />
 		</p>
-		<p>
+		<p>   
 			<label for="userPass">비밀번호</label> 
 			<input type="password" id="userPass" name="userPass" />
 		</p>

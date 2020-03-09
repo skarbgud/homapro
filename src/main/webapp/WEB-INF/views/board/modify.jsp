@@ -27,7 +27,7 @@
 		<form role="form" method="post" autocomplete="off">
 		
 			<p>
-				<label for ="bno">글번호</label><input type="text" id="bno" name ="bno" value="${modify.bno }" />
+				<label for ="bno">글번호</label><input type="text" id="bno" name ="bno" value="${modify.bno }" readonly="readonly"/>
 			</p>
 		
 			<p>
@@ -41,19 +41,24 @@
 				<label>작성 날짜</label> <span><fmt:formatDate value="${modify.regDate }" pattern="yyyy-MM-dd"/></span>
 			</p>
 			<p>
-				<button type="submit">수정</button><button id="cancel_btn">취소</button>
+				<button type="submit">수정</button>
+				<button type="button" id="cancel_btn">취소</button>
 				
 				<script>
-				//폼을 변수에 저장
-				var formObj = ${"form[role='form']"};
+				// 폼을 변수에 저장
+				var formObj = $("form[role='form']");  
 				
-				//취소 버튼 클릭
-				$("#cancel_btn").click(function() {
-					formObj.attr("action","/board/read?bno="+$("#bno").val());
-					formObj.attr("method","get");
-					formObj.submit();
+				// 취소 버튼 클릭
+				$("#cancel_btn").click(function(){			
+					self.location = "/board/read?bno=${modify.bno}"
+								+ "&page=${scri.page}"
+								+ "&perPageNum=${scri.perPageNum}"
+								+ "&searchType=${scri.searchType}"
+								+ "&keyword=${scri.keyword}";
+					
 				});
 				</script>
+
 			</p>
 		</form>
 	</section>

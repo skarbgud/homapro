@@ -10,8 +10,10 @@ import com.kuzuro.domain.BoardVO;
 import com.kuzuro.domain.Criteria;
 import com.kuzuro.domain.SearchCriteria;
 import com.kuzuro.persistence.BoardDAO;
+
 @Repository
 public class BoardServiceImpl implements BoardService {
+	
 	@Inject
 	private BoardDAO dao;
 	

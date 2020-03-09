@@ -28,6 +28,28 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public MemberVO login(MemberVO vo) throws Exception {
 		// TODO Auto-generated method stub
-		return sql.selectOne(namespace+".login",vo);
+		//return sql.selectOne(namespace+".login",vo);
+		return sql.selectOne(namespace+".loginBcrypt",vo);
+	}
+	
+	//회원정보 수정
+	@Override
+	public void modify(MemberVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		sql.update(namespace+".modify", vo);
+	}
+	
+	//회원정보 삭제
+	@Override
+	public void delete(MemberVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		sql.delete(namespace+".delete",vo);
+	}
+	
+	//아이디 중복
+	@Override
+	public MemberVO idCheck(String userId) throws Exception {
+		// TODO Auto-generated method stub
+		return sql.selectOne(namespace+".idCheck",userId);
 	}
 }

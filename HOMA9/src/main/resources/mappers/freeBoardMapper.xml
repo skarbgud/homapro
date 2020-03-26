@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homa.mappers.freeBoardMapper">
+	
+	<!-- 작성 -->
+	 <insert id="write">
+	  insert into freeBoard(fb_num, fb_subject, fb_content,userId)
+	      values (freeBoard_seq.nextval, #{fb_subject}, #{fb_content},#{userId})
+	 </insert>
+	
+	 <!-- 조회 -->
+	 <select id="read" resultType="com.homa.domain.FreeBoardVO">
+	 	select fb_num, fb_subject, fb_content, fb_date,fb_readCount,userId
+	   from freeBoard
+	    where fb_num = #{fb_num}
+	 </select>
+	
+	 <!-- 수정 --> 
+	 <update id="update">
+	  update freeBoard
+	   set
+	    fb_subject= #{fb_subject},
+	    fb_content = #{fb_content}
+	   where fb_num = #{fb_num}  
+	 </update>
+	 
+	 <!-- 삭제 -->
+	 <delete id="delete">
+	  delete from
+	   freeBoard
+	  where fb_num = #{fb_num}
+	 </delete>
+	 
+	 <!-- 목록 -->
+	 <select id="list" resultType="com.homa.domain.FreeBoardVO">
+	 	select fb_num,fb_subject,userId,fb_date,fb_readCount
+	 		 from freeBoard
+	 		 	order by fb_num desc 
+	 </select>
+	 
+	 <!-- 페이징 -->
+	 <select id="listPage" resultType="com.homa.domain.FreeBoardVO">
+	 	select fb_num,fb_subject,fb_content,userId,fb_date,fb_readCount
+	    from (
+	            select fb_num,fb_subject,fb_content,userId,fb_date,fb_readCount,
+	                row_number() over(order by fb_num desc) as rNum
+	            from freeBoard
+	            ) mb
+	        where rNum between #{rowStart} and #{rowEnd}
+	            order by fb_num desc;
+	 </select>
+	 
+	 
+	 
+	
+	<select id="listCount" resultType="int">
+	<![CDATA[
+		select count(fb_num)
+			from freeBoard
+				where fb_num > 0
+	]]>
+	</select>
+	
+	
+	
+<!-- 검색 -->
+<select id="listSearch" resultType="com.homa.domain.FreeBoardVO" 
+parameterType="com.homa.domain.SearchCriteria">
+select fb_num, fb_subject, fb_content, userId, fb_date, fb_readCount
+       from (
+           select fb_num, fb_subject, fb_content, userId, fb_date, fb_readCount,
+               row_number() over(order by fb_num desc) as rNum
+           from freeBoard
+   			<include refid="search"></include>
+   		) mb 
+   	where rNum between #{rowStart} and #{rowEnd}
+       	order by fb_num desc
+</select>
+
+<sql id="search">
+	<if test="searchType != null">
+		<if test="searchType == 't'.toString()">where fb_subject like '%' || #{keyword} || '%'</if>
+		<if test="searchType == 'c'.toString()">where fb_content like '%' || #{keyword} || '%'</if>
+		<if test="searchType == 'w'.toString()">where userId like '%' || #{keyword} || '%'</if>
+		<if test="searchType == 'tc'.toString()">where (fb_subject like '%' || #{keyword} || '%')
+													or (fb_content like '%' || #{keyword} || '%')</if>
+	</if>
+</sql>
+	
+	
+	
+<select id="countSearch" resultType="int">
+	select count(fb_num)
+		from freeBoard
+			<include refid="search"></include>
+<![CDATA[
+			and bno > 0
+]]>
+</select>
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homa.mappers.noticeMapper">
+	<!-- 작성 -->
+	<insert id="write">
+		insert into notice(no_num, no_subject, no_content,userId)
+		values (notice_seq.nextval, #{no_subject}, #{no_content},#{userId})
+	</insert>
+
+	<!-- 조회 -->
+	<select id="read" resultType="com.homa.domain.NoticeVO">
+		select no_num, no_subject, no_content, no_date,no_readCount,userId
+		from notice
+		where no_num = #{no_num}
+	</select>
+
+	<!-- 수정 -->
+	<update id="update">
+		update notice
+		set
+		no_subject= #{no_subject},
+		no_content = #{no_content}
+		where no_num = #{no_num}
+	</update>
+
+	<!-- 삭제 -->
+	<delete id="delete">
+		delete from
+		notice
+		where no_num = #{no_num}
+	</delete>
+
+	<!-- 목록 -->
+	<select id="list" resultType="com.homa.domain.NoticeVO">
+		select no_num,no_subject,userId,no_date,no_readCount
+		from notice
+		order by no_num desc
+	</select>
+
+	<!-- 페이징 -->
+	<select id="listPage" resultType="com.homa.domain.NoticeVO">
+		select no_num,no_subject,no_content,userId,no_date,no_readCount
+		from (
+		select no_num,no_subject,no_content,userId,no_date,no_readCount,
+		row_number() over(order by no_num desc) as rNum
+		from notice
+		) mb
+		where rNum between #{rowStart} and #{rowEnd}
+		order by no_num desc;
+	</select>
+
+
+
+
+	<select id="listCount" resultType="int">
+	<![CDATA[
+		select count(no_num)
+			from notice
+				where no_num > 0
+	]]>
+	</select>
+
+
+
+	<!-- 검색 -->
+	<select id="listSearch" resultType="com.homa.domain.NoticeVO"
+		parameterType="com.homa.domain.SearchCriteria">
+		select no_num, no_subject, no_content, userId,no_date, no_readCount
+		from (
+		select no_num, no_subject, no_content, userId,no_date, no_readCount,
+		row_number() over(order by no_num desc) as rNum
+		from Notice
+		<include refid="search"></include>
+		) mb
+		where rNum between #{rowStart} and #{rowEnd}
+		order by no_num desc
+	</select>
+
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">where no_subject like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'c'.toString()">where no_content like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'w'.toString()">where userId like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'tc'.toString()">where (no_subject like '%' || #{keyword} || '%')
+				or (no_content like '%' || #{keyword} || '%')</if>
+		</if>
+	</sql>
+
+
+
+	<select id="countSearch" resultType="int">
+		select count(no_num)
+		from freeBoard
+		<include refid="search"></include>
+<![CDATA[
+			and no_num > 0
+]]>
+	</select>
+
+</mapper>

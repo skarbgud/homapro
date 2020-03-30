@@ -14,10 +14,19 @@ public class MatchingDAOImpl implements MatchingDAO {
 	
 	//매퍼
 	private static String namespace = "com.homa.mappers.matchingMapper";
+	
+	//정보조회
 	@Override
 	public MatchingVO matchingRead(String userId) throws Exception {
 		// TODO Auto-generated method stub
 		return sql.selectOne(namespace+".matchingRead", userId);
+	}
+	
+	//정보등록
+	@Override
+	public void matchingRegist(MatchingVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		sql.insert(namespace+".matchingRegist",vo);
 	}
 
 }

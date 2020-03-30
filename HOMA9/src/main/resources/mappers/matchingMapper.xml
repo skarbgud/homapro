@@ -5,11 +5,20 @@
 <mapper namespace="com.homa.mappers.matchingMapper">
 	
 	
-	
+	<!-- 매칭정보 읽기 -->
 	<select id="matchingRead" resultType="com.homa.domain.MatchingVO">
 		select *
 			from matching
 				where userId = #{userId}
 	</select>
 	
+	<!-- 매칭정보 등록 -->
+	<insert id="matchingRegist">
+		insert into Matching(mat_workStart,mat_workEnd,mat_job,mat_wakeUp,mat_clean
+		,mat_person,mat_gender,mat_region,mat_food,userId,mat_workDetail
+		,mat_jobDetail,mat_wakeUpDetail,mat_cleanDetail,mat_personDetail,mat_genderDetail,mat_regionDetail,mat_foodDetail)
+		 values(#{mat_workStart},#{mat_workEnd},#{mat_job},#{mat_wakeUp},#{mat_clean}
+		,#{mat_person},#{mat_gender},#{mat_region},#{mat_food},#{userId},#{mat_workDetail}
+		,#{mat_jobDetail},#{mat_wakeUpDetail},#{mat_cleanDetail},#{mat_personDetail},#{mat_genderDetail},#{mat_regionDetail},#{mat_foodDetail})
+	</insert>
 </mapper>

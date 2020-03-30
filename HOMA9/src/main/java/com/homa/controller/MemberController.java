@@ -1,16 +1,21 @@
 package com.homa.controller;
 
+import java.io.PrintWriter;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.homa.domain.MemberVO;
@@ -160,5 +165,71 @@ public class MemberController {
 		
 		return "redirect:/";
 	}
+	// 아이디찾기 폼 
+		@RequestMapping(value = "/idfind")
+		public String idFindForm() throws Exception {
+
+			logger.info("idfind");
+
+			return "/member/idfind";
+
+		}
+
+		// 아이디찾기 
+		@RequestMapping(value = "/idprint")
+		public ModelAndView idFind(@ModelAttribute MemberVO vo,HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+			response.setContentType("text/html; charset=utf-8"); 
+			response.setCharacterEncoding("UTF-8");
+			logger.info("idprint");
+			PrintWriter out = response.getWriter();
+			
+			ModelAndView mav = new ModelAndView();
+			MemberVO memberList = service.idFind(vo);
+			
+			if (memberList != null) {
+				mav.setViewName("/member/idprint");
+				mav.addObject("member", memberList);
+			} else {
+				mav.setViewName("/member/idfind");
+				out.println("<script>");
+				out.println("alert('가입된 아이디가 없습니다.');");
+				out.println("history.go(-1);");
+				out.println("</script>");
+				out.close();
+			}
+			 
+			return mav;
+		}
+
+		// 비밀번호찾기 폼
+		@RequestMapping(value = "/passwordfind")
+		public String passwordFindForm() throws Exception {
+
+			logger.info("passwordfind");
+
+			return "/member/passwordfind";
+
+		}
+
+		// 비밀번호찾기
+		@RequestMapping(value = "/passwordprint")
+		public ModelAndView passwordFind(@ModelAttribute MemberVO vo,HttpServletRequest request) throws Exception {
+			logger.info("passwordfind");
+			ModelAndView mav = new ModelAndView();
+			MemberVO memberList = service.passwordFind(vo);
+			mav.setViewName("/member/passwordprint");//아이디가 없어서 안뜸
+			//아이디를 넣거나, 쿼리문을 바꾸거나
+			mav.addObject("member", memberList);
+			return mav;
+		}
+		
+		// 비밀번호변경
+		@RequestMapping(value = "/passwordmodify")
+		public String passwordModify(MemberVO vo) throws Exception {
+			logger.info("passwordmodify");
+			service.passwordModify(vo);
+			return "redirect:/member/login";
+		}
 
 }

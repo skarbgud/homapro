@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.homa.domain.MatchingVO;
 import com.homa.service.MatchingService;
-import com.homa.service.MemberService;
+
 
 @Controller
 @RequestMapping("/matching/*")
@@ -23,17 +23,9 @@ public class MatchingController {
 	@Inject 
 	MatchingService service;
 	
-	
-	//매칭 정보 조회
-	@RequestMapping(value = "/matchingRead", method = RequestMethod.GET)
-	public String matchingRead(HttpSession session,Model model) throws Exception{
-		logger.info("matching read");
-		//로그인이 되어있는지 확인
-		Object loginInfo = session.getAttribute("member");
-		if(loginInfo == null) {
-			model.addAttribute("msg",null);
-		}
-		
+	@RequestMapping(value = "/matchingIndex",method = RequestMethod.GET)
+	public String matchingIndex(HttpSession session,Model model) throws Exception{
+		logger.info("mathcing Index");
 		//유저의 아이디 세션에서 가져오기
 		String userId = (String)session.getAttribute("userId");
 
@@ -41,18 +33,39 @@ public class MatchingController {
 	    MatchingVO matchingVO = service.matchingRead(userId);
 	    
 	    if(matchingVO == null) {
-	    	return "/matching/matchingRegist";
+	    	return "redirect:/matching/matchingRegist";
 	    }
 	    else {
 	    	model.addAttribute("machingVO",matchingVO);
-	    	return "/matching/matchingRead";
+	    	return "redirect:/matching/matchingRead";
 	    }
 	}
 	
-	//매칭 정보 등록
+	//매칭 정보 조회 get
+	@RequestMapping(value = "/matchingRead", method = RequestMethod.GET)
+	public void matchingRead(HttpSession session,Model model) throws Exception{
+		logger.info("matching read");
+		String userId = (String)session.getAttribute("userId");
+		
+		MatchingVO vo = service.matchingRead(userId);
+		model.addAttribute("matchingVO", vo);
+	}
+	
+	
+	
+	//매칭 정보 등록 get
 	@RequestMapping(value = "/matchingRegist",method =  RequestMethod.GET)
-	public void matchingRegist() throws Exception{
-		logger.info("matching regist");
+	public void getMatchingRegist() throws Exception{
+		logger.info("getMatching regist");
+	}
+	
+	//매칭정보 등록 post
+	@RequestMapping(value = "/matchingRegist",method = RequestMethod.POST)
+	public String postMatchingRegitst(MatchingVO vo) throws Exception{
+		logger.info("postMatching regtist");
+		service.matchingRegist(vo);
+		
+		return "redirect:/matching/matchingRead";
 	}
 	
 }

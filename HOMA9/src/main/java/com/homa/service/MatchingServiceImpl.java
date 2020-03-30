@@ -16,5 +16,12 @@ public class MatchingServiceImpl implements MatchingService {
 		// TODO Auto-generated method stub
 		return dao.matchingRead(userId);
 	}
+	
+	//등록
+	@Override
+	public void matchingRegist(MatchingVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		dao.matchingRegist(vo);;
+	}
 
 }

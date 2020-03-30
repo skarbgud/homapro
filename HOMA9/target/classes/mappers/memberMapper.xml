@@ -37,10 +37,7 @@
    		tbl_member
    	where userId = #{userId} and userPass = #{userPass} 
    </delete>
-   	
-   
-   
-   
+ 
    <!-- 아이디 중복확인 -->
    <select id ="idCheck" resultType="com.homa.domain.MemberVO">   
    		select 
@@ -59,5 +56,32 @@
    		where
    			userPass=#{userPass}
    </select>
+    <!-- 아이디 찾기 -->
+   <select id = "idFind" resultType="com.homa.domain.MemberVO">
+   		select 
+   			*
+   		from
+   			tbl_member
+   		where userName =#{userName} and userEmail =#{userEmail}	
+   </select>
    
+   <!-- 비밀번호 찾기 -->
+   <select id  = "passwordFind" resultType="com.homa.domain.MemberVO">
+   			select 
+   				userPass 
+   			from 
+   				tbl_member 
+   			where 
+   				userId =#{userId} and userEmail =#{userEmail} and passwordHint =#{passwordHint}
+   </select>
+   
+   <!-- 비밀번호 변경 -->
+   <update id="passwordModify">
+   		update
+   			tbl_member
+   		set 
+   			userPass=#{userPass}
+   		where 
+   			userId=#{userId} 	
+   </update>
 </mapper>

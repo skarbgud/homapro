@@ -14,17 +14,6 @@ create table tbl_member (
     verify      number          default 0,
     primary key(userId)
 );
-
-
-
-SELECT * FROM tbl_member;
-
-update tbl_member
-    set 
-        verify = 9
-        where userId = 'skarbgud123@naver.com';
-
-
 //자유게시판
 create table freeBoard(
     fb_num number not null,
@@ -34,7 +23,7 @@ create table freeBoard(
     fb_date Date default sysdate,
     fb_readCount number default 0,
     primary key(fb_num),
-    foreign key(userId) references tbl_member(userId) on cascade
+    foreign key(userId) references tbl_member(userId) on delete cascade
 );
     
 
@@ -53,20 +42,6 @@ create table Notice(
 )
 
 
-
-//더미파일 생성
-insert into freeBoard(fb_num,fb_subject,fb_content,userId)
-      select freeBoard_seq.nextval,fb_subject,fb_content,userId from freeBoard;
-
-
-
-//커밋
-commit;
-//롤백
-rollback;
-
-
-//댓글창 테이블 생성
 create table Comments(
  fb_num number not null,
  c_num number not null,
@@ -85,7 +60,8 @@ alter table Comments
     add CONSTRAINT Comment_userId foreign key(userId)
     references tbl_member(userId) ON DELETE CASCADE;
     
-create sequence Comments_seq;      
+    
+create sequence Comments_seq;    
 
 create table Matching(
     mat_workStart varchar2(20) not null,
@@ -112,14 +88,3 @@ create table Matching(
 alter talbe Matching
     add constraint mat_userId foreign key(userId)
     references tbl_member(userId) ON delete cascade;
-    
-alter table tbl_member add constraint addr unique (userAddr1);
-alter table tbl_member add constraint addr2 unique (userAddr3);
-
-alter table Matching
-    add constraint address1 foreign key(mat_region1)
-    references tbl_member(userAddr1) ON delete cascade;
-    
-alter table Matching
-    add constraint address2 foreign key(mat_region2)
-    references tbl_member(userAddr3) ON delete cascade;

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homa.mappers.matchingMapper">
+	
+	
+	<!-- 매칭정보 읽기 -->
+	<select id="matchingRead" resultType="com.homa.domain.MatchingVO">
+		select *
+			from matching
+				where userId = #{userId}
+	</select>
+	
+	<!-- 매칭정보 등록 -->
+	<insert id="matchingRegist">
+		insert into Matching(mat_bedTime,mat_job,mat_wakeUp,mat_clean,mat_person,
+		mat_gender,mat_region,mat_food,userId,mat_bedTimeDetail,mat_jobDetail
+		,mat_wakeUpDetail,mat_cleanDetail,mat_personDetail,mat_genderDetail,mat_regionDetail
+		,mat_foodDetail)
+		values(#{mat_bedTime},#{mat_job},#{mat_wakeUp},#{mat_clean},#{mat_person},
+		#{mat_gender},#{mat_region},#{mat_food},#{userId},#{mat_bedTimeDetail},#{mat_jobDetail}
+		,#{mat_wakeUpDetail},#{mat_cleanDetail},#{mat_personDetail},#{mat_genderDetail},#{mat_regionDetail},#{mat_foodDetail})	
+	</insert>
+	
+	<!-- 매칭정보 등록된 회원정보 -->
+	<select id="memberList" resultType="com.homa.domain.MatchingVO">
+		select * from matching
+	</select> 
+	
+	<!-- 매칭정보 삭제 -->
+	<delete id="matchingDelete">
+		delete from
+			matching
+		where userId = #{userId}
+	</delete>
+	
+	<!-- 카카오톡 아이디찾기 -->
+	<select id="searchKakao" resultType="String">
+		select kakao
+			from tbl_member
+				where userId = #{userId} 
+	</select>
+	<!-- 매칭정보 수정 --> 
+	 <update id="matchingModify">
+	  update Matching
+	   set
+	    mat_bedTime= #{mat_bedTime},mat_job= #{mat_job},mat_wakeUp= #{mat_wakeUp},mat_clean= #{mat_clean},mat_person= #{mat_person},
+		mat_gender= #{mat_gender},mat_region= #{mat_region},mat_food= #{mat_food},
+		mat_bedTimeDetail= #{mat_bedTimeDetail},mat_jobDetail= #{mat_jobDetail}
+		,mat_wakeUpDetail= #{mat_wakeUpDetail},mat_cleanDetail= #{mat_cleanDetail},mat_personDetail= #{mat_personDetail},mat_genderDetail= #{mat_genderDetail},mat_regionDetail= #{mat_regionDetail}
+		,mat_foodDetail= #{mat_foodDetail}
+	   where userId = #{userId}  
+	 </update>
+</mapper>

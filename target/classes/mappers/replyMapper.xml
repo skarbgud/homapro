@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homa.mappers.replyMapper">
+	<!-- 댓글 작성 -->
+	<insert id="registReply">
+		insert into
+		Comments(fb_num,c_num, c_content, userId)
+		values(#{fb_num},Comments_seq.nextval, #{c_content}, #{userId})
+	</insert>
+
+	<!-- 댓글 조회 -->
+	<select id="replyList" resultType="com.homa.domain.ReplyVO">
+		select
+		c_num, c_content, userId, c_date
+		from Comments
+		where fb_num=#{fb_num}
+	</select>
+
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply">
+		delete Comments
+			where c_num = #{c_num}
+			and userId = #{userId}
+	</delete>
+	
+	<!--아이디 체크 -->
+	<select id="replyUserIdCheck" resultType="String">
+		select userId
+			from comments
+				where c_num = #{c_num}
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="modifyReply">
+		update comments 
+			set 
+				c_content = #{c_content}
+				where c_num = #{c_num}
+					and userId = #{userId}
+	</update>
+	
+	<!-- 게시물 조회 -->
+	<select id="getfb_num" resultType="int">
+		select
+			fb_num
+		from 
+			comments
+		where c_num = #{c_num}
+	</select>
+</mapper>

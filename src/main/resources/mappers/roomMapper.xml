@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homa.mappers.roomMapper">
+	<!-- 방등록 -->
+	<insert id="regist">
+	insert into
+		room(r_num,r_kind,r_address1,r_address2,r_price,r_species,r_enter,
+		r_live,r_gender,r_available,r_img,r_content,r_kakao,r_area,r_option,
+		userId)
+		values
+		(room_r_num_seq.nextval,#{r_kind},#{r_address1},#{r_address2},#{r_price},#{r_species},#{r_enter},
+		#{r_live},#{r_gender},#{r_available},#{r_img},#{r_content},#{r_kakao},#{r_area},#{r_option},
+		#{userId})
+	</insert>
+	
+	<!-- 조회 -->
+	<select id = "read" resultType="com.homa.domain.RoomVO">
+	select
+		r_num,r_address1,r_address2,r_species,r_area,r_kind,r_enter,r_live,r_available,r_date,r_count,r_kakao,r_gender,r_price,r_content,r_option,r_img
+	from room 
+	where r_num=#{r_num}
+	</select>
+	
+	<!-- 수정 -->
+	<update id="update">
+	update 
+		room
+	set 
+		r_kind =#{r_kind},r_address1 =#{r_address1},r_address2 =#{r_address2},r_price =#{r_price},
+		r_species =#{r_species},r_enter =#{r_enter},r_live =#{r_live},r_available =#{r_available},
+		r_img =#{r_img},r_content =#{r_content},r_kakao =#{r_kakao},
+		r_area =#{r_area},r_option=#{r_option}
+	where r_num =#{r_num}
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id = "delete">
+	delete from 
+		room 
+	where r_num =#{r_num}
+	</delete>
+	
+	<!--게시물 총갯수-->
+	<select id="listCount" resultType="int">
+	<![CDATA[
+		select count(r_num)
+			from room
+				where r_num > 0
+	]]>
+	</select>
+
+   <!-- 목록 -->
+    <select id="list" resultType="com.homa.domain.RoomVO" parameterType="com.homa.domain.SearchCriteria">
+         select r_num,r_kind,r_address1,r_address2,r_price,r_species,r_enter,
+    	  r_live,r_gender,r_available,r_img,r_content,r_kakao,r_area,r_option,
+     	 userId
+        from(
+           select r_num,r_kind,r_address1,r_address2,r_price,r_species,r_enter,
+               r_live,r_gender,r_available,r_img,r_content,r_kakao,r_area,r_option,
+               userId,
+              row_number() over(order by r_num desc) as rNum
+           from room 
+              <include refid ="search"></include>
+           ) mb
+        where rNum between #{rowStart} and #{rowEnd}
+            order by r_num desc
+   </select>
+   
+   <!-- 검색하기 위해 필요한 조건 -->
+	<sql id = "search">
+	   <if test="searchType != null">
+	   		<!-- 주소 검색-->
+	   		<if test ="searchType == 'a'.toString()">where r_address1 like '%'|| #{keyword} ||'%'</if> 
+    	</if>
+	 </sql>
+	 
+	
+    <!-- 검색된 게시물 갯수 -->
+    <select id = "countSearch" resultType ="int">
+    	select count(r_num)
+    		from room
+    			<include refid="search"></include>
+    		<![CDATA[
+	    		and r_num>0
+	    	]]>
+    </select>
+</mapper>
